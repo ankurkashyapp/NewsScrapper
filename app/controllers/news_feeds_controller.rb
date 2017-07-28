@@ -33,15 +33,15 @@ class Api::V1::NewsFeedsController < ApplicationController
 	def single_news
 		page = Nokogiri::HTML(open("http://www.jagran.com/uttar-pradesh/saharanpur-16451282.html"))
 		@wholeArticle = page.css('.articaldetail')
-		@articleTitle = @wholeArticle.css('.title').css('h1').text.strip
+		@articleTitle = @wholeArticle.css('.title')
 		@articleImage = @wholeArticle.css('.articaltext').css('.article-content').css('.boxgrid').css('img').first['src']
 		@articleTextLines = @wholeArticle.css('.articaltext').css('.article-content').css('p')
-		@articleText = String.new
+		@articleText = ""
 		@articleTextLines.each do |articleLine|
-			@articleText = @articleText.concat(articleLine.text.strip)
+			@articaltext.concat(articleLine.text.strip)
 		end
 
-		render json: {"title": @articleTitle, "image": @articleImage, "content": @articleText}
+		render json: {"title": @articleTitle, "image": @articleImage, "content": @articaltext}
 	end
 
 	private

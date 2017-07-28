@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   	namespace :v1 do
 
   		get 'news_feeds' => 'news_feeds#show_all'
+  		get 'news'		 => 'news_feeds#single_news'
 
   	end
   end
