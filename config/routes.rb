@@ -4,9 +4,9 @@ Rails.application.routes.draw do
   namespace :api do
   	namespace :v1 do
 
-  		get 'all_users' => 'users#show_all'
+  		get 'news_feeds' => 'news_feeds#show_all'
 
   	end
   end
-  
+
 end

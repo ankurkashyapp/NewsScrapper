@@ -1,0 +1,2 @@
+class NewsFeed < ApplicationRecord
+end

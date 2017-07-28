@@ -1,4 +1,5 @@
-class Api::V1::UsersController < ApplicationController
+class Api::V1::NewsFeedsController < ApplicationController
+
 	require 'rubygems'
 	require 'nokogiri'
 	require 'open-uri'
@@ -39,4 +40,5 @@ class Api::V1::UsersController < ApplicationController
 			puts @url
 			return @url
 		end
+
 end
