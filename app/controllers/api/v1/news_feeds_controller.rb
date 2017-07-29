@@ -15,6 +15,8 @@ class Api::V1::NewsFeedsController < ApplicationController
 		@articlesList.each do |article|
 			@newsRootUrl = String.new(NEWS_ROOT_URL)
 			@title = article.css('h2').css('a').first['title']
+			@date = article.css('.date-cat').first.text.strip
+			@date = @date[/#{"on:"}(.*?)#{"(IST)"}/m, 1].strip[1, @date.rindex('(')-13]
 			begin
 				@image = article.css('a').css('img').first['src']
 				rescue Exception
@@ -23,7 +25,7 @@ class Api::V1::NewsFeedsController < ApplicationController
 			@link = @newsRootUrl.concat(article.css('a').first['href'])
 			article.css('p').search("a").remove
 			@summary = article.css('p').first.text.strip
-			@article_summary = {"title" => @title, "summary" => @summary, "image" => @image, "link" => @link}
+			@article_summary = {"title" => @title, "summary" => @summary, "image" => @image, "link" => @link, "date" => @date}
 			@articles << @article_summary
 		end
 
@@ -42,6 +44,10 @@ class Api::V1::NewsFeedsController < ApplicationController
 		end
 
 		render json: {"title": @articleTitle, "image": @articleImage, "content": @articleText}
+	end
+
+	def raj
+
 	end
 
 	private
