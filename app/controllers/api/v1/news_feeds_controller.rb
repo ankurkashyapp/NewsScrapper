@@ -34,9 +34,9 @@ class Api::V1::NewsFeedsController < ApplicationController
 	end
 
 	def single_news
+		@city = params[:city]
 		@newsId = params[:news_id]
-		puts "******************************" + @newsId
-		page = Nokogiri::HTML(open(UP_SAHARANPUR_SINGLE_NEWS_URL.insert(-6, @newsId)))
+		page = Nokogiri::HTML(getSingleNewsUrl(@city, @newsId))
 		@wholeArticle = page.css('.articaldetail')
 		@articleTitle = @wholeArticle.css('.title').css('h1').text.strip
 		@date = @wholeArticle.css('.grayrow').css('.date').first.text
@@ -66,6 +66,14 @@ class Api::V1::NewsFeedsController < ApplicationController
 				@url = @city_url.insert(-6, page)
 			end
 			puts @url
+			return @url
+		end
+
+		def getSingleNewsUrl(city, newsId)
+			if city == "Saharanpur"
+				@city_single_news_url = String.new(UP_SAHARANPUR_SINGLE_NEWS_URL)
+				@url = @city_url.insert(-6, newsId)
+			end
 			return @url
 		end
 
