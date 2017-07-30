@@ -74,6 +74,7 @@ class Api::V1::NewsFeedsController < ApplicationController
 				@city_single_news_url = String.new(UP_SAHARANPUR_SINGLE_NEWS_URL)
 				@city_single_news_url = @city_single_news_url.insert(-6, newsId)
 			end
+			puts @city_single_news_url
 			return @city_single_news_url
 		end
 
