@@ -72,7 +72,7 @@ class Api::V1::NewsFeedsController < ApplicationController
 		def getSingleNewsUrl(city, newsId)
 			if city == "Saharanpur"
 				@city_single_news_url = String.new(UP_SAHARANPUR_SINGLE_NEWS_URL)
-				@city_single_news_url = @city_url.insert(-6, newsId)
+				@city_single_news_url = @city_single_news_url.insert(-6, newsId)
 			end
 			return @city_single_news_url
 		end
