@@ -6,6 +6,7 @@ class Api::V1::NewsFeedsController < ApplicationController
 
 	NEWS_ROOT_URL = "http://www.jagran.com"
 	UP_SAHARANPUR_URL = "http://www.jagran.com/local/uttar-pradesh_saharanpur-news-hindi-page.html"
+	UP_SAHARANPUR_SINGLE_NEWS_URL = "http://www.jagran.com/uttar-pradesh/saharanpur-.html"
 	RAJASTHAN_JAIPUR_URL = "http://www.jagran.com/local/rajasthan_jaipur-news-hindi.html"
 
 	def show_all
@@ -33,9 +34,13 @@ class Api::V1::NewsFeedsController < ApplicationController
 	end
 
 	def single_news
-		page = Nokogiri::HTML(open("http://www.jagran.com/uttar-pradesh/saharanpur-16451282.html"))
+		@newsId = params[:news_id]
+		puts "******************************" + @newsId
+		page = Nokogiri::HTML(open(UP_SAHARANPUR_SINGLE_NEWS_URL.insert(-6, @newsId)))
 		@wholeArticle = page.css('.articaldetail')
 		@articleTitle = @wholeArticle.css('.title').css('h1').text.strip
+		@date = @wholeArticle.css('.grayrow').css('.date').first.text
+		@date = @date[/#{"Updated Date"}(.*?)#{"(IST)"}/m, 1].strip[1, @date.rindex('(')-61]
 		@articleImage = @wholeArticle.css('.articaltext').css('.article-content').css('.boxgrid').css('img').first['src']
 		@articleTextLines = @wholeArticle.css('.articaltext').css('.article-content').css('p')
 		@articleText = String.new
@@ -43,7 +48,7 @@ class Api::V1::NewsFeedsController < ApplicationController
 			@articleText = @articleText.concat(articleLine.text.strip)
 		end
 
-		render json: {"title": @articleTitle, "image": @articleImage, "content": @articleText}
+		render json: {"title": @articleTitle, "image": @articleImage, "date": @date, "summary": @articleText}
 	end
 
 	def raj
