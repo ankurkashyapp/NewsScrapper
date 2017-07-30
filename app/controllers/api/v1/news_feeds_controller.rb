@@ -36,10 +36,12 @@ class Api::V1::NewsFeedsController < ApplicationController
 	def single_news
 		@city = params[:city]
 		@newsId = params[:news_id]
-		page = Nokogiri::HTML(getSingleNewsUrl(@city, @newsId))
+		page = Nokogiri::HTML(open(getSingleNewsUrl(@city, @newsId)))
 		@wholeArticle = page.css('.articaldetail')
+
 		@articleTitle = @wholeArticle.css('.title').css('h1').text.strip
-		@date = @wholeArticle.css('.grayrow').css('.date').first.text
+
+		@date = @wholeArticle.css('.title').css('.grayrow').first.css('span').text
 		@date = @date[/#{"Updated Date"}(.*?)#{"(IST)"}/m, 1].strip[1, @date.rindex('(')-61]
 		@articleImage = @wholeArticle.css('.articaltext').css('.article-content').css('.boxgrid').css('img').first['src']
 		@articleTextLines = @wholeArticle.css('.articaltext').css('.article-content').css('p')
