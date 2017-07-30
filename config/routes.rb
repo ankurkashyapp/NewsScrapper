@@ -6,6 +6,7 @@ Rails.application.routes.draw do
 
   		get 'news_feeds' => 'news_feeds#show_all'
   		get 'news'		 => 'news_feeds#single_news'
+  		get 'get_latest_app' => 'news_feeds#app_version'
 
   	end
   end

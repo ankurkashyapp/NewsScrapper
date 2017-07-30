@@ -9,6 +9,8 @@ class Api::V1::NewsFeedsController < ApplicationController
 	UP_SAHARANPUR_SINGLE_NEWS_URL = "http://www.jagran.com/uttar-pradesh/saharanpur-.html"
 	RAJASTHAN_JAIPUR_URL = "http://www.jagran.com/local/rajasthan_jaipur-news-hindi.html"
 
+	THOUGHT_URL = "http://www.achhikhabar.com/2012/01/01/101-inspirational-motivational-quotes-in-hindi/"
+
 	def show_all
 		page = Nokogiri::HTML(open(getCityUrl(params[:city], params[:page])))
 		@articlesList = page.css('.listing').css('li')
@@ -53,8 +55,15 @@ class Api::V1::NewsFeedsController < ApplicationController
 		render json: {"title": @articleTitle, "image": @articleImage, "date": @date, "summary": @articleText}
 	end
 
-	def raj
-
+	def app_version
+		appVersion = AppVersion.where("app_name in (?) and latest_version in (?)", params[:app_name], params[:installed_version])
+		if appVersion.size>0
+			@message_type = "NORMAL"
+		else
+			appVersion = AppVersion.where("app_name in (?)", params[:app_name])
+			@message_type = "ALERT"
+		end
+		render json: {"message_type": @message_type, "thought": getThoughtOfDay, "app_version": appVersion}
 	end
 
 	private
@@ -78,6 +87,24 @@ class Api::V1::NewsFeedsController < ApplicationController
 			end
 			puts @city_single_news_url
 			return @city_single_news_url
+		end
+
+		def getThoughtOfDay
+			page = Nokogiri::HTML(open(THOUGHT_URL))
+			@thoughts = page.css('.entry-content').css('p')
+			@thoughts_filtered = []
+			i = 1
+			while i<@thoughts.size && i<60 do
+				@thoughts[i].search('span').remove
+				@thoughts_filtered << @thoughts[i].text.strip
+				#puts @thoughts[i].text.strip
+				i = i+2
+			end
+			@randomNo = rand(@thoughts_filtered.size)
+			@thoughts = page.css('.entry-content').css('h5')
+			#return @thoughts_filtered[]
+			puts @thoughts_filtered[@randomNo]
+			return {"thought_of_day": @thoughts_filtered[@randomNo], "author": @thoughts[@randomNo-1].text.strip}
 		end
 
 end
