@@ -7,6 +7,9 @@ class Api::V1::NewsFeedsController < ApplicationController
 	NEWS_ROOT_URL = "http://www.jagran.com"
 	UP_SAHARANPUR_URL = "http://www.jagran.com/local/uttar-pradesh_saharanpur-news-hindi-page.html"
 	UP_SAHARANPUR_SINGLE_NEWS_URL = "http://www.jagran.com/uttar-pradesh/saharanpur-.html"
+	JOKES_URL = "http://www.jagran.com/hindi-jokes-page.html"
+	JOKES_SINGLE_URL = "http://www.jagran.com/jokes/general-funny-jokes-in-hindi-.html"
+
 	RAJASTHAN_JAIPUR_URL = "http://www.jagran.com/local/rajasthan_jaipur-news-hindi.html"
 
 	THOUGHT_URL = "http://www.achhikhabar.com/2012/01/01/101-inspirational-motivational-quotes-in-hindi/"
@@ -66,6 +69,36 @@ class Api::V1::NewsFeedsController < ApplicationController
 		render json: {"message_type": @message_type, "thought": getThoughtOfDay, "app_version": appVersion}
 	end
 
+	def all_jokes
+		@page = params[:page]
+		page = Nokogiri::HTML(open(getJokesUrl(@page)))
+		jokes = page.css('.mpagearticlelist').css('.articletxtCon')
+		@jokesList = [ ]
+		jokes.each do |joke|
+			@newsRootUrl = String.new(NEWS_ROOT_URL)
+			joke = joke.css('.ajax')
+			@title = joke.css('h2').first.text.strip
+			@link = @newsRootUrl.concat(joke.first['href'])
+			@image = joke.css('.smiley-icon').css('img').first['src']
+
+			@jokesList << {"title" => @title, "link" => @link, "image" => @image}
+		end
+		render json: @jokesList, status: 201
+	end
+
+	def single_joke
+		@jokeId = params[:joke_id]
+		page = Nokogiri::HTML(open(singleJokeUrl(@jokeId)))
+		puts singleJokeUrl(@jokeId)
+		@jokeText = page.css('.joketext').first.css('p')
+		@image = page.css('.joketext').css('.jokeimg').css('img').first['src']
+		@fullJoke = String.new("")
+		@jokeText.each do |text1|
+			@fullJoke = @fullJoke + text1.text
+		end
+		render json: {"image": @image, "joke_content": @fullJoke}
+	end
+
 	private
 		def getCityUrl(city, page)
 
@@ -105,6 +138,21 @@ class Api::V1::NewsFeedsController < ApplicationController
 			#return @thoughts_filtered[]
 			puts @thoughts_filtered[@randomNo]
 			return {"thought_of_day": @thoughts_filtered[@randomNo], "author": @thoughts[@randomNo-1].text.strip}
+		end
+
+		def getJokesUrl(page)
+			if page == "1"
+				@jokesUrl = String.new("http://www.jagran.com/hindi-jokes.html")
+			else
+				@jokesUrl = String.new(JOKES_URL)
+				@jokesUrl = @jokesUrl.insert(-6, page)
+			end
+			return @jokesUrl
+		end
+
+		def singleJokeUrl(jokeId)
+			@jokeUrl = String.new(JOKES_SINGLE_URL)
+			@jokeUrl = @jokeUrl.insert(-6, jokeId)
 		end
 
 end
