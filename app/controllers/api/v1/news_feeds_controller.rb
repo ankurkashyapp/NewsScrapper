@@ -52,7 +52,7 @@ class Api::V1::NewsFeedsController < ApplicationController
 		@articleTextLines = @wholeArticle.css('.articaltext').css('.article-content').css('p')
 		@articleText = String.new
 		@articleTextLines.each do |articleLine|
-			@articleText = @articleText.concat(articleLine.text.strip)
+			@articleText = @articleText.concat(articleLine.text)
 		end
 
 		render json: {"title": @articleTitle, "image": @articleImage, "date": @date, "summary": @articleText}
