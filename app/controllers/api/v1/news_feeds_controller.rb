@@ -18,7 +18,7 @@ class Api::V1::NewsFeedsController < ApplicationController
 	HEADERS_HASH = {"User-Agent" => "Ruby/#{RUBY_VERSION}"}
 
 	def show_all
-		page = Nokogiri::HTML(open(getCityUrl(params[:city], params[:page]), HEADERS_HASH).read)
+		page = Nokogiri::HTML(open(getCityUrl(params[:city], params[:page]), 'User-Agent' => 'Ruby').read)
 		
 		#page = Nokogiri::HTML(Net::HTTP.get(getCityUrl(params[:city], params[:page])))
 		@articlesList = page.css('.listing').css('li')
