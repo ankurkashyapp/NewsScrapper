@@ -3,7 +3,7 @@ class Api::V1::NewsFeedsController < ApplicationController
 	require 'rubygems'
 	require 'nokogiri'
 	require 'open-uri'
-	require 'net/http'
+	#require 'net/http'
 
 	NEWS_ROOT_URL = "http://www.jagran.com"
 	UP_SAHARANPUR_URL = "http://www.jagran.com/local/uttar-pradesh_saharanpur-news-hindi-page.html"
@@ -15,8 +15,10 @@ class Api::V1::NewsFeedsController < ApplicationController
 
 	THOUGHT_URL = "http://www.achhikhabar.com/2012/01/01/101-inspirational-motivational-quotes-in-hindi/"
 
+	HEADERS_HASH = {"User-Agent" => "Ruby/#{RUBY_VERSION}"}
+
 	def show_all
-		page = Nokogiri::HTML(open(getCityUrl(params[:city], params[:page]), 'User-Agent' => 'ruby'))
+		page = Nokogiri::HTML(open(getCityUrl(params[:city], params[:page]), HEADERS_HASH).read)
 		
 		#page = Nokogiri::HTML(Net::HTTP.get(getCityUrl(params[:city], params[:page])))
 		@articlesList = page.css('.listing').css('li')
