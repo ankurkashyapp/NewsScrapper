@@ -17,7 +17,19 @@ class Api::V1::NewsFeedsController < ApplicationController
 
 	HEADERS_HASH = {"User-Agent" => "Ruby/#{RUBY_VERSION}"}
 
+	def update_feeds
+		NewsFeed.updateNewsFeeds
+		render json: {"message": "Feeds updated successfully"}
+	end
+
+	def update_articles
+		NewsArticle.updateNewsArticles
+		render json: {"message": "Feeds updated successfully"}
+	end
+
+
 	def show_all
+=begin
 		page = Nokogiri::HTML(open(getCityUrl(params[:city], params[:page]), 'User-Agent' => 'my own user agent').read)
 		
 		#page = Nokogiri::HTML(Net::HTTP.get(URI.parse(getCityUrl(params[:city], params[:page]))))
@@ -40,12 +52,15 @@ class Api::V1::NewsFeedsController < ApplicationController
 			@article_summary = {"title" => @title, "summary" => @summary, "image" => @image, "link" => @link, "date" => @date}
 			@articles << @article_summary
 		end
-
-		render json: {"message": "User created successfully", "content": @articles}, status: 201
+=end
+		feeds = NewsFeed.where("city in (?)", params[:city]).order(id: :DESC).page params[:page]
+		render json: {"message": "Feeds fetched successfully", "content": feeds}
+		#render json: {"message": "User created successfully", "content": @articles}, status: 201
 	end
 
 	def single_news
-		@city = params[:city]
+		
+=begin		city = params[:city]
 		@newsId = params[:news_id]
 		page = Nokogiri::HTML(open(getSingleNewsUrl(@city, @newsId)))
 		@wholeArticle = page.css('.articaldetail')
@@ -61,7 +76,10 @@ class Api::V1::NewsFeedsController < ApplicationController
 			@articleText = @articleText.concat(articleLine.text)
 		end
 
-		render json: {"title": @articleTitle, "image": @articleImage, "date": @date, "summary": @articleText}
+=end    
+		news = NewsArticle.where("news_feed_id = (?)", params[:news_id])
+		render json: news.first
+		#render json: {"title": news[:title], "image": news[:image], "date": news[:date], "summary": news[:summary]}
 	end
 
 	def app_version

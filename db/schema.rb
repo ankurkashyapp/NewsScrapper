@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170730105344) do
+ActiveRecord::Schema.define(version: 20170807185858) do
 
   create_table "app_versions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "app_name"
@@ -19,9 +19,27 @@ ActiveRecord::Schema.define(version: 20170730105344) do
     t.datetime "updated_at",     null: false
   end
 
+  create_table "news_articles", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.text     "title",        limit: 65535
+    t.string   "image"
+    t.string   "date"
+    t.text     "summary",      limit: 65535
+    t.integer  "news_feed_id"
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+    t.index ["news_feed_id"], name: "index_news_articles_on_news_feed_id", using: :btree
+    t.index ["news_feed_id"], name: "news_feed_id", unique: true, using: :btree
+  end
+
   create_table "news_feeds", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.text     "title",      limit: 65535
+    t.text     "summary",    limit: 65535
+    t.string   "image"
+    t.string   "link"
+    t.string   "date"
+    t.string   "city"
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
   end
 
   create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -31,4 +49,5 @@ ActiveRecord::Schema.define(version: 20170730105344) do
     t.datetime "updated_at",               null: false
   end
 
+  add_foreign_key "news_articles", "news_feeds"
 end
