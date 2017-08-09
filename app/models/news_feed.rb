@@ -9,7 +9,7 @@ class NewsFeed < ApplicationRecord
 	UP_SAHARANPUR_URL = "http://www.jagran.com/local/uttar-pradesh_saharanpur-news-hindi-page.html"
 
 	def self.updateNewsFeeds
-		page = Nokogiri::HTML(open("http://www.jagran.com/local/uttar-pradesh_saharanpur-news-hindi-page1.html"))
+		page = Nokogiri::HTML(open("http://www.jagran.com/local/uttar-pradesh_saharanpur-news-hindi-page1.html", 'User-Agent' => 'my own user agent'))
 		@articlesList = page.css('.listing').css('li')
 		@articlesList.each do |article|
 			@newsRootUrl = String.new(NEWS_ROOT_URL)

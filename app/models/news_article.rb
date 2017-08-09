@@ -8,7 +8,7 @@ class NewsArticle < ApplicationRecord
 		feeds.each do |feed|
 			puts "*******"
 			puts feed[:id]
-			page = Nokogiri::HTML(open(getSingleNewsUrl("Saharanpur", feed[:id])))
+			page = Nokogiri::HTML(open(getSingleNewsUrl("Saharanpur", feed[:id]), 'User-Agent' => 'MyRubyAgent'))
 			@wholeArticle = page.css('.articaldetail')
 
 			@articleTitle = @wholeArticle.css('.title').css('h1').text.strip
