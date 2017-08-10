@@ -93,38 +93,6 @@ class Api::V1::NewsFeedsController < ApplicationController
 		render json: {"message_type": @message_type, "thought": getThoughtOfDay, "app_version": appVersion}
 	end
 
-	def all_jokes
-		@user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_0) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.854.0 Safari/535.2"
-		@page = params[:page]
-		page = Nokogiri::HTML(open(getJokesUrl(@page), 'User-Agent' => @user_agent))
-		jokes = page.css('.mpagearticlelist').css('.articletxtCon')
-		@jokesList = [ ]
-		jokes.each do |joke|
-			@newsRootUrl = String.new(NEWS_ROOT_URL)
-			joke = joke.css('.ajax')
-			@title = joke.css('h2').first.text.strip
-			@link = @newsRootUrl.concat(joke.first['href'])
-			@image = joke.css('.smiley-icon').css('img').first['src']
-
-			@jokesList << {"title" => @title, "link" => @link, "image" => @image}
-		end
-		render json: @jokesList, status: 201
-	end
-
-	def single_joke
-		@user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_0) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.854.0 Safari/535.2"
-		@jokeId = params[:joke_id]
-		page = Nokogiri::HTML(open(singleJokeUrl(@jokeId), 'User-Agent' => @user_agent))
-		puts singleJokeUrl(@jokeId)
-		@jokeText = page.css('.joketext').first.css('p')
-		@image = page.css('.joketext').css('.jokeimg').css('img').first['src']
-		@fullJoke = String.new("")
-		@jokeText.each do |text1|
-			@fullJoke = @fullJoke + text1.text
-		end
-		render json: {"image": @image, "joke_content": @fullJoke}
-	end
-
 	private
 		def getCityUrl(city, page)
 

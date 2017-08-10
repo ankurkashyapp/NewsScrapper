@@ -2,7 +2,7 @@ class JokesList < ApplicationRecord
 	has_one :jokes_detail
 	paginates_per 20
 
-	JOKES_URL = "http://www.jagran.com/hindi-jokes-page3.html"
+	JOKES_URL = "http://www.jagran.com/hindi-jokes-page1.html"
 	NEWS_ROOT_URL = "http://www.jagran.com"
 
 	def self.updateJokesList
