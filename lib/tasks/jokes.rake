@@ -6,6 +6,6 @@ namespace :jokes do
 	end
 
 	task update_jokes_details: :environment do
-		JokesList.updateJokesDetails
+		JokesDetail.updateJokesDetails
 	end
 end
