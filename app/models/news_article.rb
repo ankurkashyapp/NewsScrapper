@@ -4,11 +4,12 @@ class NewsArticle < ApplicationRecord
 	UP_SAHARANPUR_SINGLE_NEWS_URL = "http://www.jagran.com/uttar-pradesh/saharanpur-.html"
 
 	def self.updateNewsArticles
+		@user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_0) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.854.0 Safari/535.2"
 		feeds = NewsFeed.where("id NOT IN (?)", NewsArticle.select(:news_feed_id))
 		feeds.each do |feed|
 			puts "*******"
 			puts feed[:id]
-			page = Nokogiri::HTML(open(getSingleNewsUrl("Saharanpur", feed[:id]), 'User-Agent' => 'MyRubyAgent'))
+			page = Nokogiri::HTML(open(getSingleNewsUrl("Saharanpur", feed[:id]), 'User-Agent' => @user_agent))
 			@wholeArticle = page.css('.articaldetail')
 
 			@articleTitle = @wholeArticle.css('.title').css('h1').text.strip
