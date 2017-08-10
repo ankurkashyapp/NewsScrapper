@@ -21,8 +21,9 @@ class NewsArticle < ApplicationRecord
 			@articleTextLines.each do |articleLine|
 				@articleText = @articleText.concat(articleLine.text)
 			end
+			@city = NewsFeed.select(:city).where("id = (?)", feed[:id]).first
 			begin
-				NewsArticle.create(title: @articleTitle, image: @articleImage, date: @date, summary: @articleText, news_feed_id: feed[:id])
+				NewsArticle.create(title: @articleTitle, image: @articleImage, date: @date, summary: @articleText, news_feed_id: feed[:id], city: @city[:city])
 				rescue ActiveRecord::RecordNotUnique => e
 			end			
 		end

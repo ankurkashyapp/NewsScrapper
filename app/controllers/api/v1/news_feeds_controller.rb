@@ -94,8 +94,9 @@ class Api::V1::NewsFeedsController < ApplicationController
 	end
 
 	def all_jokes
+		@user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_0) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.854.0 Safari/535.2"
 		@page = params[:page]
-		page = Nokogiri::HTML(open(getJokesUrl(@page)))
+		page = Nokogiri::HTML(open(getJokesUrl(@page), 'User-Agent' => @user_agent))
 		jokes = page.css('.mpagearticlelist').css('.articletxtCon')
 		@jokesList = [ ]
 		jokes.each do |joke|
@@ -111,8 +112,9 @@ class Api::V1::NewsFeedsController < ApplicationController
 	end
 
 	def single_joke
+		@user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_0) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.854.0 Safari/535.2"
 		@jokeId = params[:joke_id]
-		page = Nokogiri::HTML(open(singleJokeUrl(@jokeId)))
+		page = Nokogiri::HTML(open(singleJokeUrl(@jokeId), 'User-Agent' => @user_agent))
 		puts singleJokeUrl(@jokeId)
 		@jokeText = page.css('.joketext').first.css('p')
 		@image = page.css('.joketext').css('.jokeimg').css('img').first['src']

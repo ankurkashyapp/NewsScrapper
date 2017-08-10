@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170807185858) do
+ActiveRecord::Schema.define(version: 20170810150528) do
 
   create_table "app_versions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "app_name"
@@ -25,8 +25,9 @@ ActiveRecord::Schema.define(version: 20170807185858) do
     t.string   "date"
     t.text     "summary",      limit: 65535
     t.integer  "news_feed_id"
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.datetime "created_at",                                        null: false
+    t.datetime "updated_at",                                        null: false
+    t.string   "city",                       default: "Saharanpur"
     t.index ["news_feed_id"], name: "index_news_articles_on_news_feed_id", using: :btree
     t.index ["news_feed_id"], name: "news_feed_id", unique: true, using: :btree
   end
