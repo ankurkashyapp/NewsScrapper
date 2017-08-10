@@ -180,38 +180,4 @@ class Api::V1::NewsFeedsController < ApplicationController
 			@jokeUrl = String.new(JOKES_SINGLE_URL)
 			@jokeUrl = @jokeUrl.insert(-6, jokeId)
 		end
-
-		def fetch(uri_str, limit = 10)
-		  # You should choose better exception.
-		  raise ArgumentError, 'HTTP redirect too deep' if limit == 0
-
-		  url = URI.parse(URI.encode(uri_str.strip))
-		  puts url
-
-		  #get path
-		  headers = {}
-		  req = Net::HTTP::Get.new(url.path,headers)
-		  #start TCP/IP
-		  response = Net::HTTP.start(url.host,url.port) { |http|
-		        http.request(req)
-		  }
-
-		  case response
-		  when Net::HTTPSuccess
-		    then #print final redirect to a file
-		    puts "this is location" + uri_str
-		    puts "this is the host #{url.host}"
-		    puts "this is the path #{url.path}"
-
-		    return response
-		    # if you get a 302 response
-		  when Net::HTTPRedirection
-		    then
-		    puts "this is redirect" + response['location']
-		    return fetch(response['location'], limit-1)
-		  else
-		    response.error!
-		  end
-		end
-
 end

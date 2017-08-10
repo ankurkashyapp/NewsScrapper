@@ -10,13 +10,32 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170810150528) do
+ActiveRecord::Schema.define(version: 20170810160321) do
 
   create_table "app_versions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "app_name"
     t.string   "latest_version"
     t.datetime "created_at",     null: false
     t.datetime "updated_at",     null: false
+  end
+
+  create_table "jokes_details", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "image"
+    t.text     "joke_content",  limit: 65535
+    t.integer  "jokes_list_id"
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+    t.index ["jokes_list_id"], name: "index_jokes_details_on_jokes_list_id", using: :btree
+    t.index ["jokes_list_id"], name: "jokes_list_id", unique: true, using: :btree
+  end
+
+  create_table "jokes_lists", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "title"
+    t.string   "image"
+    t.string   "link"
+    t.string   "joke_type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "news_articles", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -50,5 +69,6 @@ ActiveRecord::Schema.define(version: 20170810150528) do
     t.datetime "updated_at",               null: false
   end
 
+  add_foreign_key "jokes_details", "jokes_lists"
   add_foreign_key "news_articles", "news_feeds"
 end
