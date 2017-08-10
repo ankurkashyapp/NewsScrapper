@@ -1,6 +1,6 @@
 class NewsFeed < ApplicationRecord
 	has_one :news_article
-	paginates_per 12
+	paginates_per 20
 	require 'rubygems'
 	require 'nokogiri'
 	require 'open-uri'
@@ -9,7 +9,8 @@ class NewsFeed < ApplicationRecord
 	UP_SAHARANPUR_URL = "http://www.jagran.com/local/uttar-pradesh_saharanpur-news-hindi-page.html"
 
 	def self.updateNewsFeeds
-		page = Nokogiri::HTML(open("http://www.jagran.com/local/uttar-pradesh_saharanpur-news-hindi-page1.html", 'User-Agent' => 'my own user agent'))
+		@user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_0) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.854.0 Safari/535.2"
+		page = Nokogiri::HTML(open("http://www.jagran.com/local/uttar-pradesh_saharanpur-news-hindi-page1.html", 'User-Agent' => @user_agent))
 		@articlesList = page.css('.listing').css('li')
 		@articlesList.each do |article|
 			@newsRootUrl = String.new(NEWS_ROOT_URL)
