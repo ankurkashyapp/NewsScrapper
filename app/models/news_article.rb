@@ -9,7 +9,7 @@ class NewsArticle < ApplicationRecord
 		feeds.each do |feed|
 			puts "*******"
 			puts feed[:id]
-			page = Nokogiri::HTML(open(getSingleNewsUrl("Saharanpur", feed[:id]), :proxy => "http://23.251.128.70:8080",'User-Agent' => @user_agent))
+			page = Nokogiri::HTML(open(getSingleNewsUrl("Saharanpur", feed[:id]), :proxy => "http://162.243.15.104:8080",'User-Agent' => @user_agent))
 			@wholeArticle = page.css('.articaldetail')
 
 			@articleTitle = @wholeArticle.css('.title').css('h1').text.strip
