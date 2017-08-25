@@ -10,7 +10,7 @@ class NewsFeed < ApplicationRecord
 
 	def self.updateNewsFeeds
 		@user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_0) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.854.0 Safari/535.2"
-		page = Nokogiri::HTML(open("http://www.jagran.com/local/uttar-pradesh_saharanpur-news-hindi-page1.html", :proxy => "http://71.86.66.144:36081", 'User-Agent' => @user_agent))
+		page = Nokogiri::HTML(open("http://www.jagran.com/local/uttar-pradesh_saharanpur-news-hindi-page1.html", :proxy => "http://104.250.98.28:80", 'User-Agent' => @user_agent))
 		@articlesList = page.css('.listing').css('li')
 		@articlesList.each do |article|
 			@newsRootUrl = String.new(NEWS_ROOT_URL)
