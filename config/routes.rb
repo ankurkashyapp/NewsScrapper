@@ -11,6 +11,8 @@ Rails.application.routes.draw do
   		get 'single_joke' => 'jokes#single_joke'
       get 'update_news' => 'news_feeds#update_feeds'
       get 'update_articles' => 'news_feeds#update_articles'
+      get 'update_jokes' => 'jokes#update_jokes'
+      get 'update_jokes_details' => 'jokes#update_jokes_details'
   	end
   end
 

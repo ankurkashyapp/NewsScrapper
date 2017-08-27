@@ -18,24 +18,11 @@ class Api::V1::NewsFeedsController < ApplicationController
 	HEADERS_HASH = {"User-Agent" => "Ruby/#{RUBY_VERSION}"}
 
 	def update_feeds
-		NewsFeed.updateNewsFeeds
-		render json: {"message": "Feeds updated successfully"}
-	end
-
-	def update_articles
-		NewsArticle.updateNewsArticles
-		render json: {"message": "Feeds updated successfully"}
-	end
-
-
-	def show_all
-=begin
-		page = Nokogiri::HTML(open(getCityUrl(params[:city], params[:page]), 'User-Agent' => 'my own user agent').read)
-		
-		#page = Nokogiri::HTML(Net::HTTP.get(URI.parse(getCityUrl(params[:city], params[:page]))))
-		#page = Nokogiri::HTML(fetch(getCityUrl(params[:city], params[:page])).body)
+		#NewsFeed.updateNewsFeeds
+		puts "**********" + params[:ip]
+		@user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_0) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.854.0 Safari/535.2"
+		page = Nokogiri::HTML(open("http://www.jagran.com/local/uttar-pradesh_saharanpur-news-hindi-page1.html", :proxy => "http://".concat(params[:ip]).concat(":").concat(params[:port]), 'User-Agent' => @user_agent))
 		@articlesList = page.css('.listing').css('li')
-		@articles = [ ]
 		@articlesList.each do |article|
 			@newsRootUrl = String.new(NEWS_ROOT_URL)
 			@title = article.css('h2').css('a').first['title']
@@ -49,37 +36,53 @@ class Api::V1::NewsFeedsController < ApplicationController
 			@link = @newsRootUrl.concat(article.css('a').first['href'])
 			article.css('p').search("a").remove
 			@summary = article.css('p').first.text.strip
-			@article_summary = {"title" => @title, "summary" => @summary, "image" => @image, "link" => @link, "date" => @date}
-			@articles << @article_summary
+			@news_id = @link[@link.rindex('-')+1, @link.rindex('.')]
+			begin
+				NewsFeed.create(id: @news_id, title: @title, summary: @summary, image: @image, link: @link, date: @date, city: "Saharanpur")
+				rescue ActiveRecord::RecordNotUnique
+			end
 		end
-=end
-		feeds = NewsFeed.where("city in (?)", params[:city]).order(id: :DESC).page params[:page]
-		render json: {"message": "Feeds fetched successfully", "content": feeds}
-		#render json: {"message": "User created successfully", "content": @articles}, status: 201
+		render json: {"message": "Feeds updated successfully"}
 	end
 
-	def single_news
-		
-=begin		city = params[:city]
-		@newsId = params[:news_id]
-		page = Nokogiri::HTML(open(getSingleNewsUrl(@city, @newsId)))
-		@wholeArticle = page.css('.articaldetail')
+	def update_articles
+		#NewsArticle.updateNewsArticles
+		@user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_0) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.854.0 Safari/535.2"
+		feeds = NewsFeed.where("id NOT IN (?)", NewsArticle.select(:news_feed_id))
+		feeds.each do |feed|
+			puts "*******"
+			puts feed[:id]
+			page = Nokogiri::HTML(open(getSingleNewsUrl("Saharanpur", feed[:id]), :proxy => "http://".concat(params[:ip]).concat(":").concat(params[:port]),'User-Agent' => @user_agent))
+			@wholeArticle = page.css('.articaldetail')
 
-		@articleTitle = @wholeArticle.css('.title').css('h1').text.strip
+			@articleTitle = @wholeArticle.css('.title').css('h1').text.strip
 
-		@date = @wholeArticle.css('.title').css('.grayrow').first.css('span').text
-		@date = @date[/#{"Updated Date"}(.*?)#{"(IST)"}/m, 1].strip[1, @date.rindex('(')-61]
-		@articleImage = @wholeArticle.css('.articaltext').css('.article-content').css('.boxgrid').css('img').first['src']
-		@articleTextLines = @wholeArticle.css('.articaltext').css('.article-content').css('p')
-		@articleText = String.new
-		@articleTextLines.each do |articleLine|
-			@articleText = @articleText.concat(articleLine.text)
+			@date = @wholeArticle.css('.title').css('.grayrow').first.css('span').text
+			@date = @date[/#{"Updated Date"}(.*?)#{"(IST)"}/m, 1].strip[1, @date.rindex('(')-61]
+			@articleImage = @wholeArticle.css('.articaltext').css('.article-content').css('.boxgrid').css('img').first['src']
+			@articleTextLines = @wholeArticle.css('.articaltext').css('.article-content').css('p')
+			@articleText = String.new
+			@articleTextLines.each do |articleLine|
+				@articleText = @articleText.concat(articleLine.text)
+			end
+			@city = NewsFeed.select(:city).where("id = (?)", feed[:id]).first
+			begin
+				NewsArticle.create(title: @articleTitle, image: @articleImage, date: @date, summary: @articleText, news_feed_id: feed[:id], city: @city[:city])
+				rescue ActiveRecord::RecordNotUnique => e
+			end			
 		end
+		render json: {"message": "Feeds updated successfully"}
+	end
 
-=end    
+
+	def show_all
+		feeds = NewsFeed.where("city in (?)", params[:city]).order(id: :DESC).page params[:page]
+		render json: {"message": "Feeds fetched successfully", "content": feeds}
+	end
+
+	def single_news    
 		news = NewsArticle.where("news_feed_id = (?)", params[:news_id])
 		render json: news.first
-		#render json: {"title": news[:title], "image": news[:image], "date": news[:date], "summary": news[:summary]}
 	end
 
 	def app_version
@@ -109,8 +112,9 @@ class Api::V1::NewsFeedsController < ApplicationController
 
 		def getSingleNewsUrl(city, newsId)
 			if city == "Saharanpur"
+				articleId = newsId.to_s
 				@city_single_news_url = String.new(UP_SAHARANPUR_SINGLE_NEWS_URL)
-				@city_single_news_url = @city_single_news_url.insert(-6, newsId)
+				@city_single_news_url = @city_single_news_url.insert(-6, articleId)
 			end
 			puts @city_single_news_url
 			return @city_single_news_url
