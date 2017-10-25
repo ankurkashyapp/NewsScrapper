@@ -135,7 +135,8 @@ class Api::V1::NewsFeedsController < ApplicationController
 			@thoughts = page.css('.entry-content').css('h5')
 			#return @thoughts_filtered[]
 			puts @thoughts_filtered[@randomNo]
-			return {"thought_of_day": @thoughts_filtered[@randomNo], "author": @thoughts[@randomNo-1].text.strip}
+			#return {"thought_of_day": @thoughts_filtered[@randomNo], "author": @thoughts[@randomNo-1].text.strip}
+			return {"thought_of_day": "साधारण  दिखने  वाले  लोग  ही  दुनिया  के  सबसे  अच्छे  लोग  होते  हैं : यही  वजह  है  कि  भगवान  ऐसे  बहुत  से  लोगों का निर्माण करते हैं", "author": "अब्राहम लिंकन"}
 		end
 
 		def getJokesUrl(page)
