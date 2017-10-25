@@ -121,20 +121,20 @@ class Api::V1::NewsFeedsController < ApplicationController
 		end
 
 		def getThoughtOfDay
-			page = Nokogiri::HTML(open(THOUGHT_URL))
-			@thoughts = page.css('.entry-content').css('p')
-			@thoughts_filtered = []
-			i = 1
-			while i<@thoughts.size && i<60 do
-				@thoughts[i].search('span').remove
-				@thoughts_filtered << @thoughts[i].text.strip
-				#puts @thoughts[i].text.strip
-				i = i+2
-			end
-			@randomNo = rand(@thoughts_filtered.size)
-			@thoughts = page.css('.entry-content').css('h5')
+			#page = Nokogiri::HTML(open(THOUGHT_URL))
+			#@thoughts = page.css('.entry-content').css('p')
+			#@thoughts_filtered = []
+			#i = 1
+			#while i<@thoughts.size && i<60 do
+			#	@thoughts[i].search('span').remove
+			#	@thoughts_filtered << @thoughts[i].text.strip
+			#	#puts @thoughts[i].text.strip
+			#	i = i+2
+			#end
+			#@randomNo = rand(@thoughts_filtered.size)
+			#@thoughts = page.css('.entry-content').css('h5')
 			#return @thoughts_filtered[]
-			puts @thoughts_filtered[@randomNo]
+			#puts @thoughts_filtered[@randomNo]
 			#return {"thought_of_day": @thoughts_filtered[@randomNo], "author": @thoughts[@randomNo-1].text.strip}
 			return {"thought_of_day": "साधारण  दिखने  वाले  लोग  ही  दुनिया  के  सबसे  अच्छे  लोग  होते  हैं : यही  वजह  है  कि  भगवान  ऐसे  बहुत  से  लोगों का निर्माण करते हैं", "author": "अब्राहम लिंकन"}
 		end
