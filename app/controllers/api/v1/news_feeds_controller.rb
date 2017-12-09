@@ -20,7 +20,8 @@ class Api::V1::NewsFeedsController < ApplicationController
 	def update_feeds
 		#NewsFeed.updateNewsFeeds
 		puts "**********" + params[:ip]
-		@user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_0) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.854.0 Safari/535.2"
+		#@user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_0) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.854.0 Safari/535.2"
+		@user_agent = "Safari/537.36"
 		page = Nokogiri::HTML(open("http://www.jagran.com/local/uttar-pradesh_saharanpur-news-hindi-page1.html", :proxy => "http://".concat(params[:ip]).concat(":").concat(params[:port]), 'User-Agent' => @user_agent))
 		@articlesList = page.css('.listing').css('li')
 		@articlesList.each do |article|
