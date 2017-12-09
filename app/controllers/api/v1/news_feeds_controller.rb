@@ -3,6 +3,7 @@ class Api::V1::NewsFeedsController < ApplicationController
 	require 'rubygems'
 	require 'nokogiri'
 	require 'open-uri'
+	require 'resolv-replace'
 	#require 'net/http'
 
 	NEWS_ROOT_URL = "http://www.jagran.com"
