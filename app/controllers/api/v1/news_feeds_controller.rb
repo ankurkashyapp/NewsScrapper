@@ -7,8 +7,8 @@ class Api::V1::NewsFeedsController < ApplicationController
 	#require 'net/http'
 
 	NEWS_ROOT_URL = "http://www.jagran.com"
-	UP_SAHARANPUR_URL = "http://www.jagran.com/local/uttar-pradesh_saharanpur-news-hindi-page.html"
-	UP_SAHARANPUR_SINGLE_NEWS_URL = "http://www.jagran.com/uttar-pradesh/saharanpur-.html"
+	UP_SAHARANPUR_URL = "https://www.jagran.com/local/uttar-pradesh_saharanpur-news-hindi-page.html"
+	UP_SAHARANPUR_SINGLE_NEWS_URL = "https://www.jagran.com/uttar-pradesh/saharanpur-.html"
 	JOKES_URL = "http://www.jagran.com/hindi-jokes-page.html"
 	JOKES_SINGLE_URL = "http://www.jagran.com/jokes/general-funny-jokes-in-hindi-.html"
 
@@ -22,7 +22,7 @@ class Api::V1::NewsFeedsController < ApplicationController
 		#NewsFeed.updateNewsFeeds
 		puts "**********" + params[:ip]
 		@user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_0) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.854.0 Safari/535.2"
-		page = Nokogiri::HTML(open("http://www.jagran.com/local/uttar-pradesh_saharanpur-news-hindi-page1.html", :proxy => "http://".concat(params[:ip]).concat(":").concat(params[:port]), 'User-Agent' => @user_agent))
+		page = Nokogiri::HTML(open("https://www.jagran.com/local/uttar-pradesh_saharanpur-news-hindi-page1.html", :proxy => "http://".concat(params[:ip]).concat(":").concat(params[:port]), 'User-Agent' => @user_agent))
 		@articlesList = page.css('.listing').css('li')
 		@articlesList.each do |article|
 			@newsRootUrl = String.new(NEWS_ROOT_URL)
